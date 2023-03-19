@@ -16,13 +16,8 @@ type AuthPosts = {
     createdAt: string;
     id: string;
     title: string;
-    Comment: {
-      createdAt: string;
-      id: string;
-      postId: string;
-      title: string;
-      userId: string;
-    }[];
+    Comment: [];
+    Heart: [];
   }[];
 };
 export default function UserPosts(): JSX.Element {
@@ -44,6 +39,10 @@ export default function UserPosts(): JSX.Element {
     );
   return (
     <div>
+      <div className="text-center text-red-600 mt-10 text-lg">
+        {data?.Post.length === 0 &&
+          "You have 0 Posts ,Post Something to see it here!"}
+      </div>
       {data?.Post?.map((post) => (
         <EditPost
           id={post.id}
@@ -52,6 +51,8 @@ export default function UserPosts(): JSX.Element {
           name={data.name}
           title={post.title}
           comments={post.Comment}
+          likes={post.Heart}
+          createdAt={post.createdAt}
         />
       ))}
     </div>

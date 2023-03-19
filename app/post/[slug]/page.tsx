@@ -47,7 +47,7 @@ export default function PostDetail(url: URL) {
     );
 
   return (
-    <div>
+    <div className="mt-16">
       <Post
         id={data?.id}
         name={data?.user.name}

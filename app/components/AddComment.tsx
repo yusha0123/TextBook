@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 type Comment = {
   postId?: string;
@@ -14,6 +15,7 @@ type PostProps = {
 };
 export default function AddComment({ id }: PostProps) {
   const [title, setTitle] = useState("");
+  const { data: session } = useSession();
   const [isDisabled, setIsDisabled] = useState(false);
   const [commentToastId, setCommentToastId] = useState("");
 
@@ -41,6 +43,11 @@ export default function AddComment({ id }: PostProps) {
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsDisabled(true);
+
+    if (!session) {
+      toast.error("Please Sign in to Comment!", { id: commentToastId });
+      return;
+    }
     setCommentToastId(toast.loading("Adding your comment"));
     mutate({ title, postId: id });
   };
