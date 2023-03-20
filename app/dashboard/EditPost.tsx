@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 
 type EditProps = {
@@ -106,10 +107,13 @@ export default function EditPost({
         <div className="my-8 ">
           <p className="break-all">{title}</p>
         </div>
-        <div className="flex items-center gap-4 ">
-          <p className=" text-sm font-bold text-gray-700">
-            {comments?.length} {comments?.length === 1 ? "Comment" : "Comments"}
-          </p>
+        <div className="flex items-center gap-4 cursor-pointer">
+          <Link href={`/post/${id}`}>
+            <p className=" text-sm font-bold text-gray-700">
+              {comments?.length}{" "}
+              {comments?.length === 1 ? "Comment" : "Comments"}
+            </p>
+          </Link>
           <div className="flex items-center gap-1 flex-1">
             <HeartIcon fill={currentUserLiked} />
             <p>{likes.length}</p>

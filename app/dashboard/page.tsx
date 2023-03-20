@@ -6,7 +6,7 @@ import UserPosts from "./UserPosts";
 const Dashboard = async () => {
   const session = await getServerSession(authOptions);
   if (!session) {
-    redirect("/api/auth/sign");
+    redirect("/api/auth/signin");
   }
   return (
     <main className="mt-16">

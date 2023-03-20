@@ -1,7 +1,7 @@
 import Navbar from "./auth/Navbar";
 import QueryWrapper from "./components/QueryWrapper";
 import "./globals.css";
-import AuthContext from "./auth/AuthContext";
+import Authcontext from "./auth/Authcontext";
 
 export const metadata = {
   title: "Text Book",
@@ -13,10 +13,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="mx-4 md:mx-48 xl:mx-96 bg-gray-200">
         <QueryWrapper>
-          <AuthContext>
+          <Authcontext>
             <Navbar />
             {children}
-          </AuthContext>
+          </Authcontext>
         </QueryWrapper>
       </body>
     </html>
