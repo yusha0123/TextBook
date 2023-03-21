@@ -6,6 +6,7 @@ import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { formatDate } from "../util";
 
 interface Props {
   id: string;
@@ -56,7 +57,6 @@ const Post = ({
   likes,
   queryKey,
 }: Props) => {
-  const moment = require("moment");
   const { data: session } = useSession();
   const { user } = session || {};
   const currentUserLiked =
@@ -99,8 +99,10 @@ const Post = ({
           alt="avatar"
           className="rounded-full"
         />
-        <h3 className="font-bold text-gray-600 flex-1">{name}</h3>
-        <h4 className="text-sm text-gray-400">{moment(createdAt).fromNow()}</h4>
+        <div className="flex flex-col gap-1">
+          <h3 className="font-bold text-gray-600 flex-1">{name}</h3>
+          <h4 className="text-sm">{formatDate(createdAt)}</h4>
+        </div>
       </div>
       <div className="my-8">
         <p className="break-all">{postTitle}</p>

@@ -3,8 +3,15 @@ import AddComment from "@/app/components/AddComment";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import Post from "@/app/components/Post";
+import { formatDate } from "@/app/util";
+import { useSession } from "next-auth/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 type URL = {
   params: {
@@ -14,11 +21,11 @@ type URL = {
 };
 
 interface CommentType {
-  id: number;
+  id: string;
   message: string;
   createdAt: string;
   user: {
-    id: number;
+    id: string;
     name: string;
     image: string;
   };
@@ -29,11 +36,35 @@ const fetchDetails = async (slug: string) => {
 };
 
 export default function PostDetail(url: URL) {
-  const moment = require("moment");
+  const { data: session } = useSession();
+  const queryClient = useQueryClient();
+  const [toastId, setToastId] = useState("");
+  const { user } = session || {};
   const { data, isLoading } = useQuery({
     queryKey: ["detail-post"],
     queryFn: () => fetchDetails(url.params.slug),
   });
+
+  const { mutate } = useMutation(
+    async (id: string) =>
+      await axios.delete("/api/posts/deleteComment", { data: id }),
+    {
+      onError: (error) => {
+        toast.error("Error has Occurred while deleting your Comment!", {
+          id: toastId,
+        });
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["detail-post"]);
+        toast.success("Comment deleted Successfully!", { id: toastId });
+      },
+    }
+  );
+
+  const deleteComment = (id: string) => {
+    setToastId(toast.loading("Deleting your Comment..."));
+    mutate(id);
+  };
   if (isLoading)
     return (
       <>
@@ -69,13 +100,24 @@ export default function PostDetail(url: URL) {
         >
           <div className="flex items-center gap-2">
             <Image
-              width={24}
-              height={24}
+              width={30}
+              height={30}
               src={comment.user?.image}
               alt="avatar"
+              className="rounded-full"
             />
-            <h3 className="font-bold flex-1">{comment?.user?.name}</h3>
-            <h2 className="text-sm">{moment(comment.createdAt).fromNow()}</h2>
+            <div className="flex flex-col gap-1 flex-1">
+              <h3 className="font-bold flex-1">{comment?.user?.name}</h3>
+              <h2 className="text-sm">{formatDate(comment.createdAt)}</h2>
+            </div>
+            {user?.id === comment.user?.id && (
+              <button
+                className="text-white bg-red-500 p-2 text-sm rounded"
+                onClick={() => deleteComment(comment.id)}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            )}
           </div>
           <div className="py-4">{comment.message}</div>
         </motion.div>

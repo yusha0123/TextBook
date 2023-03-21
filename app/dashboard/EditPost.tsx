@@ -9,6 +9,9 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { formatDate } from "../util";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 type EditProps = {
   id: string;
@@ -59,7 +62,6 @@ export default function EditPost({
 }: EditProps) {
   const [toggle, setToggle] = useState(false);
   const queryClient = useQueryClient();
-  const moment = require("moment");
   const [deleteToastID, setDeleteToastID] = useState("");
   const { data: session } = useSession();
   const { user } = session || {};
@@ -98,11 +100,17 @@ export default function EditPost({
         className="bg-white my-8 p-8 rounded-lg "
       >
         <div className="flex items-center gap-2">
-          <Image width={32} height={32} src={avatar} alt="avatar" />
-          <h3 className="font-bold text-gray-700 flex-1">{name}</h3>
-          <h4 className="text-sm text-gray-400">
-            {moment(createdAt).fromNow()}
-          </h4>
+          <Image
+            width={32}
+            height={32}
+            src={avatar}
+            alt="avatar"
+            className="rounded-full"
+          />
+          <div className="flex flex-col gap-1">
+            <h3 className="font-bold text-gray-700 flex-1">{name}</h3>
+            <h4 className="text-sm">{formatDate(createdAt)}</h4>
+          </div>
         </div>
         <div className="my-8 ">
           <p className="break-all">{title}</p>
@@ -119,27 +127,13 @@ export default function EditPost({
             <p>{likes.length}</p>
           </div>
           <button
+            className="text-white bg-red-500 p-2 text-sm rounded"
             onClick={(e) => {
               e.stopPropagation();
               setToggle(true);
             }}
-            className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
-            Delete
+            <FontAwesomeIcon icon={faTrash} />
           </button>
         </div>
       </motion.div>

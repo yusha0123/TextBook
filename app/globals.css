@@ -16,6 +16,8 @@
   border-radius: 10px;
 }
 
-* {
-  scrollbar-width: thin;
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
