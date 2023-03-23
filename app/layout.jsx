@@ -2,6 +2,14 @@ import Navbar from "./auth/Navbar";
 import QueryWrapper from "./components/QueryWrapper";
 import "./globals.css";
 import Authcontext from "./auth/Authcontext";
+//theme
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+
+//core
+import "primereact/resources/primereact.min.css";
+
+//icons
+import "primeicons/primeicons.css";
 
 export const metadata = {
   title: "Text Book",

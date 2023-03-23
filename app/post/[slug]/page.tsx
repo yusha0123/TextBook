@@ -9,9 +9,8 @@ import { motion } from "framer-motion";
 import Post from "@/app/components/Post";
 import { formatDate } from "@/app/util";
 import { useSession } from "next-auth/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 type URL = {
   params: {
@@ -37,6 +36,8 @@ const fetchDetails = async (slug: string) => {
 
 export default function PostDetail(url: URL) {
   const { data: session } = useSession();
+  const [toggle, setToggle] = useState(false);
+  const idRef = useRef("");
   const queryClient = useQueryClient();
   const [toastId, setToastId] = useState("");
   const { user } = session || {};
@@ -78,50 +79,64 @@ export default function PostDetail(url: URL) {
     );
 
   return (
-    <div className="mt-16">
-      <Post
-        id={data?.id}
-        name={data?.user.name}
-        avatar={data?.user.image}
-        postTitle={data?.title}
-        comments={data?.Comment}
-        createdAt={data?.createdAt}
-        likes={data?.Heart}
-        queryKey="detail-post"
-      />
-      <AddComment id={data?.id} />
-      {data?.Comment?.map((comment: CommentType) => (
-        <motion.div
-          animate={{ opacity: 1, scale: 1 }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          transition={{ ease: "easeOut" }}
-          className="my-6 bg-white p-8 rounded-md"
-          key={comment.id}
-        >
-          <div className="flex items-center gap-2">
-            <Image
-              width={30}
-              height={30}
-              src={comment.user?.image}
-              alt="avatar"
-              className="rounded-full"
-            />
-            <div className="flex flex-col gap-1 flex-1">
-              <h3 className="font-bold flex-1">{comment?.user?.name}</h3>
-              <h2 className="text-sm">{formatDate(comment.createdAt)}</h2>
+    <>
+      <div className="mt-16">
+        <Post
+          id={data?.id}
+          name={data?.user.name}
+          avatar={data?.user.image}
+          postTitle={data?.title}
+          comments={data?.Comment}
+          createdAt={data?.createdAt}
+          likes={data?.Heart}
+          queryKey="detail-post"
+        />
+        <AddComment id={data?.id} />
+        {data?.Comment?.map((comment: CommentType) => (
+          <motion.div
+            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            transition={{ ease: "easeOut" }}
+            className="my-6 bg-white p-8 rounded-md shadow-sm"
+            key={comment.id}
+          >
+            <div className="flex items-center gap-2">
+              <Image
+                width={30}
+                height={30}
+                src={comment.user?.image}
+                alt="avatar"
+                className="rounded-full"
+              />
+              <div className="flex flex-col gap-1 flex-1">
+                <h3 className="font-bold flex-1">{comment?.user?.name}</h3>
+                <h2 className="text-sm">{formatDate(comment.createdAt)}</h2>
+              </div>
+              {user?.id === comment.user?.id && (
+                <button
+                  className="text-white bg-red-500 p-2 text-sm rounded"
+                  onClick={() => {
+                    idRef.current = comment.id;
+                    setToggle(true);
+                  }}
+                >
+                  <i className="pi pi-trash" />
+                </button>
+              )}
             </div>
-            {user?.id === comment.user?.id && (
-              <button
-                className="text-white bg-red-500 p-2 text-sm rounded"
-                onClick={() => deleteComment(comment.id)}
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
-            )}
-          </div>
-          <div className="py-4">{comment.message}</div>
-        </motion.div>
-      ))}
-    </div>
+            <div className="py-4">{comment.message}</div>
+          </motion.div>
+        ))}
+      </div>
+      <ConfirmDialog
+        visible={toggle}
+        onHide={() => setToggle(false)}
+        message="Are you sure you want to delete this Comment?"
+        header="Confirmation"
+        icon="pi pi-exclamation-triangle"
+        accept={() => deleteComment(idRef.current)}
+        reject={() => setToggle(false)}
+      />
+    </>
   );
 }

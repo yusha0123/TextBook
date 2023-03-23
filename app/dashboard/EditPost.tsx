@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import Toggle from "./Toggle";
+import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -10,8 +9,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { formatDate } from "../util";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 type EditProps = {
   id: string;
@@ -128,16 +126,21 @@ export default function EditPost({
           </div>
           <button
             className="text-white bg-red-500 p-2 text-sm rounded"
-            onClick={(e) => {
-              e.stopPropagation();
-              setToggle(true);
-            }}
+            onClick={() => setToggle(true)}
           >
-            <FontAwesomeIcon icon={faTrash} />
+            <i className="pi pi-trash" />
           </button>
         </div>
       </motion.div>
-      {toggle && <Toggle deletePost={deletePost} setToggle={setToggle} />}
+      <ConfirmDialog
+        visible={toggle}
+        onHide={() => setToggle(false)}
+        message="Are you sure you want to delete this Post?"
+        header="Confirmation"
+        icon="pi pi-exclamation-triangle"
+        accept={deletePost}
+        reject={() => setToggle(false)}
+      />
     </>
   );
 }
