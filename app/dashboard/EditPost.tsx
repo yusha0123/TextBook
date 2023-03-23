@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { formatDate } from "../util";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { Button } from "primereact/button";
 
 type EditProps = {
   id: string;
@@ -124,18 +125,19 @@ export default function EditPost({
             <HeartIcon fill={currentUserLiked} />
             <p>{likes.length}</p>
           </div>
-          <button
-            className="text-white bg-red-500 p-2 text-sm rounded"
+          <Button
+            icon="pi pi-trash"
+            size="small"
+            text
+            severity="danger"
             onClick={() => setToggle(true)}
-          >
-            <i className="pi pi-trash" />
-          </button>
+          />
         </div>
       </motion.div>
       <ConfirmDialog
         visible={toggle}
         onHide={() => setToggle(false)}
-        message="Are you sure you want to delete this Post?"
+        message="Wanna delete this Post?"
         header="Confirmation"
         icon="pi pi-exclamation-triangle"
         accept={deletePost}

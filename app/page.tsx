@@ -4,6 +4,7 @@ import axios from "axios";
 import AddPost from "./components/AddPost";
 import Post from "./components/Post";
 import { motion } from "framer-motion";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 const allPosts = async () => {
   const response = await axios.get("/api/posts/getPosts");
@@ -18,14 +19,12 @@ export default function Home() {
   if (error) return error;
   if (isLoading)
     return (
-      <>
-        <div className="flex items-center justify-center fixed inset-0">
-          <div
-            className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-            role="status"
-          ></div>
-        </div>
-      </>
+      <div className="flex items-center justify-center fixed inset-0">
+        <ProgressSpinner
+          style={{ width: "70px ", height: "70px" }}
+          strokeWidth="3"
+        />
+      </div>
     );
   return (
     <main className="mt-20">

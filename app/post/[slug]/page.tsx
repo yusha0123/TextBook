@@ -11,6 +11,8 @@ import { formatDate } from "@/app/util";
 import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { Button } from "primereact/button";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 type URL = {
   params: {
@@ -70,10 +72,10 @@ export default function PostDetail(url: URL) {
     return (
       <>
         <div className="flex items-center justify-center fixed inset-0">
-          <div
-            className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-            role="status"
-          ></div>
+          <ProgressSpinner
+            style={{ width: "70px ", height: "70px" }}
+            strokeWidth="3"
+          />
         </div>
       </>
     );
@@ -113,15 +115,17 @@ export default function PostDetail(url: URL) {
                 <h2 className="text-sm">{formatDate(comment.createdAt)}</h2>
               </div>
               {user?.id === comment.user?.id && (
-                <button
-                  className="text-white bg-red-500 p-2 text-sm rounded"
+                <Button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  rounded
+                  text
                   onClick={() => {
                     idRef.current = comment.id;
                     setToggle(true);
                   }}
-                >
-                  <i className="pi pi-trash" />
-                </button>
+                />
               )}
             </div>
             <div className="py-4">{comment.message}</div>
@@ -131,7 +135,7 @@ export default function PostDetail(url: URL) {
       <ConfirmDialog
         visible={toggle}
         onHide={() => setToggle(false)}
-        message="Are you sure you want to delete this Comment?"
+        message="Wanna delete this Comment?"
         header="Confirmation"
         icon="pi pi-exclamation-triangle"
         accept={() => deleteComment(idRef.current)}

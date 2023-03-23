@@ -3,10 +3,10 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "../util";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 interface Props {
   id: string;
@@ -115,7 +115,10 @@ const Post = ({
         </Link>
         <div className="flex items-center gap-1">
           {loading ? (
-            <LoadingSpinner />
+            <ProgressSpinner
+              style={{ width: "20px", height: "20px" }}
+              strokeWidth="3"
+            />
           ) : (
             <HeartIcon
               fill={currentUserLiked}

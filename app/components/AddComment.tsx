@@ -5,6 +5,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
 
 type Comment = {
   postId?: string;
@@ -53,25 +55,20 @@ export default function AddComment({ id }: PostProps) {
   };
   return (
     <form onSubmit={submitPost} className="my-8">
-      <div className="flex flex-col my-2">
-        <input
-          onChange={(e) => setTitle(e.target.value)}
-          value={title}
-          type="text"
-          name="title"
-          className="p-4 text-lg rounded-md my-2"
-        />
+      <div className="flex flex-col my-3">
+        <InputText onChange={(e) => setTitle(e.target.value)} value={title} />
       </div>
       <div className="flex items-center justify-between">
-        <button
+        <Button
           disabled={
             isDisabled || title.length > 300 || title.trim().length === 0
           }
-          className=" text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5   disabled:opacity-25"
+          label="Comment"
           type="submit"
-        >
-          Comment
-        </button>
+          severity="help"
+          rounded
+          size="small"
+        />
         <p
           className={`font-bold  ${
             title.length > 300 ? "text-red-700" : "text-gray-700"

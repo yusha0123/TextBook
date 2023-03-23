@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { Button } from "primereact/button";
 
 type User = {
   image: string;
@@ -19,12 +20,12 @@ const Logged = ({ image }: User) => {
           className="w-10 rounded-full hover:opacity-75"
         />
       </Link>
-      <button
-        className="bg-gray-500 hover:bg-gray-700  active:bg-gray-700 text-white text-sm px-6 py-2 text-light rounded-md"
+      <Button
+        label="Sign Out"
+        size="small"
+        severity="secondary"
         onClick={() => signOut()}
-      >
-        Sign Out
-      </button>
+      />
     </li>
   );
 };
