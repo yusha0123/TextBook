@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { formatDate } from "../util";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
+import { Avatar } from "primereact/avatar";
 
 type EditProps = {
   id: string;
@@ -99,13 +100,7 @@ export default function EditPost({
         className="bg-white my-8 p-8 rounded-lg "
       >
         <div className="flex items-center gap-2">
-          <Image
-            width={32}
-            height={32}
-            src={avatar}
-            alt="avatar"
-            className="rounded-full"
-          />
+          <Avatar image={avatar} size="large" shape="circle" />
           <div className="flex flex-col gap-1">
             <h3 className="font-bold text-gray-700 flex-1">{name}</h3>
             <h4 className="text-sm">{formatDate(createdAt)}</h4>

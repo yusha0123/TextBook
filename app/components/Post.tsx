@@ -1,12 +1,13 @@
 "use client";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "../util";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Avatar } from "primereact/avatar";
+import { Button } from "primereact/button";
 
 interface Props {
   id: string;
@@ -92,13 +93,7 @@ const Post = ({
   return (
     <div className="bg-white my-8 p-8 rounded-lg shadow-md">
       <div className="flex items-center gap-2">
-        <Image
-          width={32}
-          height={32}
-          src={avatar}
-          alt="avatar"
-          className="rounded-full"
-        />
+        <Avatar image={avatar} size="large" shape="circle" />
         <div className="flex flex-col gap-1">
           <h3 className="font-bold text-gray-600 flex-1">{name}</h3>
           <h4 className="text-sm">{formatDate(createdAt)}</h4>

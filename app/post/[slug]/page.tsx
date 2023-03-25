@@ -1,6 +1,5 @@
 "use client";
 import AddComment from "@/app/components/AddComment";
-import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +12,7 @@ import { useRef, useState } from "react";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Avatar } from "primereact/avatar";
 
 type URL = {
   params: {
@@ -103,13 +103,7 @@ export default function PostDetail(url: URL) {
             key={comment.id}
           >
             <div className="flex items-center gap-2">
-              <Image
-                width={30}
-                height={30}
-                src={comment.user?.image}
-                alt="avatar"
-                className="rounded-full"
-              />
+              <Avatar image={comment.user?.image} size="large" shape="circle" />
               <div className="flex flex-col gap-1 flex-1">
                 <h3 className="font-bold flex-1">{comment?.user?.name}</h3>
                 <h2 className="text-sm">{formatDate(comment.createdAt)}</h2>

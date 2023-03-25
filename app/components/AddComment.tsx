@@ -50,7 +50,7 @@ export default function AddComment({ id }: PostProps) {
       toast.error("Please Sign in to Comment!", { id: commentToastId });
       return;
     }
-    setCommentToastId(toast.loading("Adding your comment"));
+    setCommentToastId(toast.loading("Please wait..."));
     mutate({ title, postId: id });
   };
   return (
