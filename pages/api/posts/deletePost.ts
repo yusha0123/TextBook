@@ -12,17 +12,19 @@ export default async function handler(
     if (!session) {
       return res.status(401).json({ message: "Please sign In!" });
     }
-    const postId = req.body
+    const postId = req.body;
     try {
       const result = await prisma.post.delete({
         where: {
           id: postId,
         },
-      })
+      });
 
-      res.status(200).json(result)
+      res.status(200).json(result);
     } catch (err) {
-        res.status(403).json({ err: "Error has occured while deleting your Post!" })
-      }
+      res
+        .status(403)
+        .json({ err: "Error has occured while deleting your Post!" });
     }
   }
+}

@@ -25,7 +25,6 @@ const Logged = ({ image }: User) => {
         size="small"
         severity="secondary"
         onClick={() => signOut()}
-        icon="pi pi-sign-out"
       />
     </li>
   );

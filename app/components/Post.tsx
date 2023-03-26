@@ -7,7 +7,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "../util";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Avatar } from "primereact/avatar";
-import { Button } from "primereact/button";
 
 interface Props {
   id: string;
@@ -91,7 +90,7 @@ const Post = ({
     }
   };
   return (
-    <div className="bg-white my-8 p-8 rounded-lg shadow-md">
+    <div className="bg-white my-5 p-4 md:p-8 rounded-lg shadow-md">
       <div className="flex items-center gap-2">
         <Avatar image={avatar} size="large" shape="circle" />
         <div className="flex flex-col gap-1">

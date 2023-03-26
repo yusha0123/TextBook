@@ -99,7 +99,7 @@ export default function PostDetail(url: URL) {
             animate={{ opacity: 1, scale: 1 }}
             initial={{ opacity: 0, scale: 0.8 }}
             transition={{ ease: "easeOut" }}
-            className="my-6 bg-white p-8 rounded-md shadow-sm"
+            className="my-6 bg-white p-4 md:p-8 rounded-md shadow-sm"
             key={comment.id}
           >
             <div className="flex items-center gap-2">

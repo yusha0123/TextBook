@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -12,6 +11,9 @@ import { formatDate } from "../util";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Avatar } from "primereact/avatar";
+import { Menu } from "primereact/menu";
+import { Dialog } from "primereact/dialog";
+import { InputTextarea } from "primereact/inputtextarea";
 
 type EditProps = {
   id: string;
@@ -26,6 +28,11 @@ type EditProps = {
   }[];
   likes: { id: string; postId: string; userId: string }[];
   createdAt: string;
+};
+
+type Data = {
+  id: string;
+  newPost: string;
 };
 
 const HeartIcon = ({ fill }: { fill: boolean }) => {
@@ -61,14 +68,38 @@ export default function EditPost({
   createdAt,
 }: EditProps) {
   const [toggle, setToggle] = useState(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const queryClient = useQueryClient();
+  const [disabled, setIsDisabled] = useState<boolean>(false);
+  const [newPost, setNewPost] = useState("");
   const [deleteToastID, setDeleteToastID] = useState("");
   const { data: session } = useSession();
   const { user } = session || {};
+  const menu = useRef<Menu>(null);
   const currentUserLiked =
     (session && likes.some((like) => like.userId === user?.id)) || false;
+  const items = [
+    {
+      items: [
+        {
+          label: "Edit Post",
+          icon: "pi pi-pencil",
+          command: () => {
+            setVisible(true);
+          },
+        },
+        {
+          label: "Delete Post",
+          icon: "pi pi-trash",
+          command: () => {
+            setToggle(true);
+          },
+        },
+      ],
+    },
+  ];
 
-  const { mutate } = useMutation(
+  const { mutate: deletePostMutation } = useMutation(
     async (id: string) =>
       await axios.delete("/api/posts/deletePost", { data: id }),
     {
@@ -83,27 +114,61 @@ export default function EditPost({
       },
     }
   );
-
+  const { mutate: updatePostMutation } = useMutation(
+    async (data: Data) => {
+      return axios.post("/api/posts/editPost", { data });
+    },
+    {
+      onError: (error) => {
+        toast.error("Error has occurred while updating your post!", {
+          id: deleteToastID,
+        });
+        setVisible(false);
+        setIsDisabled(false);
+      },
+      onSuccess: (data) => {
+        setVisible(false);
+        setNewPost("");
+        setIsDisabled(false);
+        queryClient.invalidateQueries(["user-posts"]);
+        toast.success("Post updated Successfully!", { id: deleteToastID });
+      },
+    }
+  );
   const deletePost = () => {
     setDeleteToastID(
       toast.loading("Deleting your post...", { id: deleteToastID })
     );
-    mutate(id);
+    deletePostMutation(id);
   };
 
+  const updatePost = () => {
+    setIsDisabled(true);
+    setDeleteToastID(toast.loading("Saving...", { id: deleteToastID }));
+    updatePostMutation({ id, newPost });
+  };
   return (
     <>
       <motion.div
         animate={{ opacity: 1, scale: 1 }}
         initial={{ opacity: 0, scale: 0.8 }}
         transition={{ ease: "easeOut" }}
-        className="bg-white my-8 p-8 rounded-lg "
+        className="bg-white my-5 p-4 md:p-8 rounded-lg "
       >
         <div className="flex items-center gap-2">
           <Avatar image={avatar} size="large" shape="circle" />
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 flex-1">
             <h3 className="font-bold text-gray-700 flex-1">{name}</h3>
             <h4 className="text-sm">{formatDate(createdAt)}</h4>
+          </div>
+          <div>
+            <Button
+              icon="pi pi-bars"
+              severity="secondary"
+              rounded
+              text
+              onClick={(e) => menu.current?.toggle(e)}
+            />
           </div>
         </div>
         <div className="my-8 ">
@@ -120,13 +185,7 @@ export default function EditPost({
             <HeartIcon fill={currentUserLiked} />
             <p>{likes.length}</p>
           </div>
-          <Button
-            icon="pi pi-trash"
-            size="small"
-            text
-            severity="danger"
-            onClick={() => setToggle(true)}
-          />
+          <Menu model={items} popup ref={menu} />
         </div>
       </motion.div>
       <ConfirmDialog
@@ -138,6 +197,34 @@ export default function EditPost({
         accept={deletePost}
         reject={() => setToggle(false)}
       />
+      <Dialog
+        header="Edit Post"
+        visible={visible}
+        onHide={() => setVisible(false)}
+        footer={
+          <Button
+            label="Update"
+            severity="info"
+            onClick={updatePost}
+            disabled={
+              disabled || newPost.trim().length === 0 || newPost.length > 300
+            }
+            size="small"
+          />
+        }
+        style={{ width: "50vw" }}
+        breakpoints={{ "960px": "75vw", "500px": "100vw" }}
+      >
+        <div className="m-1">
+          <InputTextarea
+            placeholder="Write your thoughts here..."
+            value={newPost}
+            rows={3}
+            onChange={(e) => setNewPost(e.target.value)}
+            className="w-full"
+          />
+        </div>
+      </Dialog>
     </>
   );
 }
