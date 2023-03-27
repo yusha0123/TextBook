@@ -72,7 +72,7 @@ export default function EditPost({
   const queryClient = useQueryClient();
   const [disabled, setIsDisabled] = useState<boolean>(false);
   const [newPost, setNewPost] = useState("");
-  const [deleteToastID, setDeleteToastID] = useState("");
+  const [ToastID, setToastID] = useState("");
   const { data: session } = useSession();
   const { user } = session || {};
   const menu = useRef<Menu>(null);
@@ -85,6 +85,7 @@ export default function EditPost({
           label: "Edit Post",
           icon: "pi pi-pencil",
           command: () => {
+            setNewPost(title);
             setVisible(true);
           },
         },
@@ -105,12 +106,12 @@ export default function EditPost({
     {
       onError: (error) => {
         toast.error("Error has Occurred while deleting your Post!", {
-          id: deleteToastID,
+          id: ToastID,
         });
       },
       onSuccess: (data) => {
         queryClient.invalidateQueries(["user-posts"]);
-        toast.success("Post has been deleted.", { id: deleteToastID });
+        toast.success("Post deleted Successfully!", { id: ToastID });
       },
     }
   );
@@ -121,7 +122,7 @@ export default function EditPost({
     {
       onError: (error) => {
         toast.error("Error has occurred while updating your post!", {
-          id: deleteToastID,
+          id: ToastID,
         });
         setVisible(false);
         setIsDisabled(false);
@@ -131,20 +132,18 @@ export default function EditPost({
         setNewPost("");
         setIsDisabled(false);
         queryClient.invalidateQueries(["user-posts"]);
-        toast.success("Post updated Successfully!", { id: deleteToastID });
+        toast.success("Post updated Successfully!", { id: ToastID });
       },
     }
   );
   const deletePost = () => {
-    setDeleteToastID(
-      toast.loading("Deleting your post...", { id: deleteToastID })
-    );
+    setToastID(toast.loading("Deleting your post...", { id: ToastID }));
     deletePostMutation(id);
   };
 
   const updatePost = () => {
     setIsDisabled(true);
-    setDeleteToastID(toast.loading("Saving...", { id: deleteToastID }));
+    setToastID(toast.loading("Saving...", { id: ToastID }));
     updatePostMutation({ id, newPost });
   };
   return (
@@ -167,6 +166,7 @@ export default function EditPost({
               severity="secondary"
               rounded
               text
+              size="small"
               onClick={(e) => menu.current?.toggle(e)}
             />
           </div>
@@ -207,7 +207,10 @@ export default function EditPost({
             severity="info"
             onClick={updatePost}
             disabled={
-              disabled || newPost.trim().length === 0 || newPost.length > 300
+              disabled ||
+              newPost.trim().length === 0 ||
+              newPost.length > 300 ||
+              newPost === title
             }
             size="small"
           />
