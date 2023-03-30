@@ -1,32 +1,58 @@
 "use client";
-import Image from "next/image";
 import { signOut } from "next-auth/react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "primereact/button";
+import { Menu } from "primereact/menu";
+import { MenuItem } from "primereact/menuitem";
+import { useRef } from "react";
+import { Avatar } from "primereact/avatar";
 
 type User = {
   image: string;
+  name: string;
 };
-const Logged = ({ image }: User) => {
+const Logged = ({ image, name }: User) => {
+  const menu = useRef<Menu>(null);
+  const router = useRouter();
+  const items: MenuItem[] = [
+    {
+      template: () => {
+        return (
+          <div className="flex items-center p-1 justify-center gap-2">
+            <Avatar image={image} shape="circle" />
+            <span className="font-bold">{name}</span>
+          </div>
+        );
+      },
+    },
+    { separator: true },
+    {
+      label: "Dashboard",
+      icon: "pi pi-user",
+      command: () => {
+        router.push("/dashboard");
+      },
+    },
+    {
+      label: "Sign Out",
+      icon: "pi pi-sign-out",
+      command: () => {
+        signOut();
+      },
+    },
+  ];
   return (
-    <li className="flex gap-4 items-center">
-      <Link href={"/dashboard"}>
-        <Image
-          width={20}
-          height={20}
-          src={image}
-          alt="userAvatar"
-          priority
-          className="w-10 rounded-full hover:opacity-75"
-        />
-      </Link>
+    <>
       <Button
-        label="Sign Out"
-        size="small"
-        severity="secondary"
-        onClick={() => signOut()}
+        rounded
+        text
+        raised
+        // severity="secondary"
+        icon="pi pi-bars"
+        onClick={(e) => menu.current?.toggle(e)}
       />
-    </li>
+      <Menu model={items} popup ref={menu} />
+    </>
   );
 };
 
