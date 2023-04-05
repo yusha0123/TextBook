@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { classNames } from "primereact/utils";
 
 type Comment = {
   postId?: string;
@@ -56,7 +57,11 @@ export default function AddComment({ id }: PostProps) {
   return (
     <form onSubmit={submitPost} className="my-8">
       <div className="flex flex-col my-3">
-        <InputText onChange={(e) => setTitle(e.target.value)} value={title} />
+        <InputText
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
+          className={classNames({ "p-invalid": title.length > 300 })}
+        />
       </div>
       <div className="flex items-center justify-between">
         <Button

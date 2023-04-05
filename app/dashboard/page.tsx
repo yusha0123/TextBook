@@ -13,10 +13,7 @@ const Dashboard = async () => {
     redirect("/api/auth/signin");
   }
   return (
-    <main className="mt-16">
-      <h1 className="text-2xl font-bold text-center">
-        Welcome {session?.user?.name}
-      </h1>
+    <main className="mt-20">
       <UserPosts />
     </main>
   );

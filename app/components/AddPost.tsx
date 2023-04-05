@@ -6,6 +6,7 @@ import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
+import { classNames } from "primereact/utils";
 
 const AddPost = () => {
   const [title, setTitle] = useState("");
@@ -47,8 +48,8 @@ const AddPost = () => {
           placeholder="Write your thoughts here..."
           value={title}
           rows={3}
+          className={classNames("w-full", { "p-invalid": title.length > 300 })}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full"
         />
       </div>
       <div className="flex items-center justify-between">
