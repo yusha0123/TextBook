@@ -14,6 +14,7 @@ import { Avatar } from "primereact/avatar";
 import { Menu } from "primereact/menu";
 import { Dialog } from "primereact/dialog";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Card } from "primereact/card";
 
 type EditProps = {
   id: string;
@@ -146,47 +147,84 @@ export default function EditPost({
     setToastID(toast.loading("Saving...", { id: ToastID }));
     updatePostMutation({ id, newPost });
   };
+
+  const footer = (
+    <div className="flex items-center gap-4 cursor-pointer">
+      <Link href={`/post/${id}`}>
+        <p className=" text-sm font-bold text-gray-700">
+          {comments?.length} {comments?.length === 1 ? "Comment" : "Comments"}
+        </p>
+      </Link>
+      <div className="flex items-center gap-1 flex-1">
+        <HeartIcon fill={currentUserLiked} />
+        <p>{likes.length}</p>
+      </div>
+      <Menu model={items} popup ref={menu} />
+    </div>
+  );
+  const header = (
+    <div className="flex items-center gap-2">
+      <Avatar image={avatar} size="large" shape="circle" />
+      <div className="flex flex-col gap-1 flex-1">
+        <h3 className="font-bold text-gray-700 flex-1">{name}</h3>
+        <h4 className="text-sm">{formatDate(createdAt)}</h4>
+      </div>
+      <div>
+        <Button
+          icon="pi pi-bars"
+          severity="secondary"
+          rounded
+          text
+          size="small"
+          onClick={(e) => menu.current?.toggle(e)}
+        />
+      </div>
+    </div>
+  );
   return (
     <>
       <motion.div
         animate={{ opacity: 1, scale: 1 }}
         initial={{ opacity: 0, scale: 0.8 }}
         transition={{ ease: "easeOut" }}
-        className="bg-white my-5 p-4 md:p-8 rounded-lg "
       >
-        <div className="flex items-center gap-2">
-          <Avatar image={avatar} size="large" shape="circle" />
-          <div className="flex flex-col gap-1 flex-1">
-            <h3 className="font-bold text-gray-700 flex-1">{name}</h3>
-            <h4 className="text-sm">{formatDate(createdAt)}</h4>
+        <Card className=" my-5">
+          <div className="m-0">
+            <div className="flex items-center gap-2">
+              <Avatar image={avatar} size="large" shape="circle" />
+              <div className="flex flex-col gap-1 flex-1">
+                <h3 className="font-bold text-gray-700 flex-1">{name}</h3>
+                <h4 className="text-sm">{formatDate(createdAt)}</h4>
+              </div>
+              <div>
+                <Button
+                  icon="pi pi-bars"
+                  severity="secondary"
+                  rounded
+                  text
+                  size="small"
+                  onClick={(e) => menu.current?.toggle(e)}
+                />
+              </div>
+            </div>
+            <div className="my-8 ">
+              <p className="break-all">{title}</p>
+            </div>
+            <div className="flex items-center gap-4 cursor-pointer">
+              <Link href={`/post/${id}`}>
+                <p className=" text-sm font-bold text-gray-700">
+                  {comments?.length}{" "}
+                  {comments?.length === 1 ? "Comment" : "Comments"}
+                </p>
+              </Link>
+              <div className="flex items-center gap-1 flex-1">
+                <HeartIcon fill={currentUserLiked} />
+                <p>{likes.length}</p>
+              </div>
+              <Menu model={items} popup ref={menu} />
+            </div>
           </div>
-          <div>
-            <Button
-              icon="pi pi-bars"
-              severity="secondary"
-              rounded
-              text
-              size="small"
-              onClick={(e) => menu.current?.toggle(e)}
-            />
-          </div>
-        </div>
-        <div className="my-8 ">
-          <p className="break-all">{title}</p>
-        </div>
-        <div className="flex items-center gap-4 cursor-pointer">
-          <Link href={`/post/${id}`}>
-            <p className=" text-sm font-bold text-gray-700">
-              {comments?.length}{" "}
-              {comments?.length === 1 ? "Comment" : "Comments"}
-            </p>
-          </Link>
-          <div className="flex items-center gap-1 flex-1">
-            <HeartIcon fill={currentUserLiked} />
-            <p>{likes.length}</p>
-          </div>
-          <Menu model={items} popup ref={menu} />
-        </div>
+        </Card>
       </motion.div>
       <ConfirmDialog
         visible={toggle}
@@ -202,18 +240,25 @@ export default function EditPost({
         visible={visible}
         onHide={() => setVisible(false)}
         footer={
-          <Button
-            label="Update"
-            severity="info"
-            onClick={updatePost}
-            disabled={
-              disabled ||
-              newPost.trim().length === 0 ||
-              newPost.length > 300 ||
-              newPost === title
-            }
-            size="small"
-          />
+          <div className="flex items-center justify-between">
+            <p
+              className={`font-bold text-sm ${
+                newPost.length > 300 ? "text-red-700" : "text-gray-700"
+              }`}
+            >{`${newPost.length}/300`}</p>
+            <Button
+              label="Update"
+              severity="info"
+              onClick={updatePost}
+              disabled={
+                disabled ||
+                newPost.trim().length === 0 ||
+                newPost.length > 300 ||
+                newPost === title
+              }
+              size="small"
+            />
+          </div>
         }
         style={{ width: "50vw" }}
         breakpoints={{ "960px": "75vw", "500px": "100vw" }}

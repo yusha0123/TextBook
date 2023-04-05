@@ -7,7 +7,7 @@ import Logged from "./Logged";
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
   return (
-    <nav className="flex fixed z-10 top-0 right-0 left-0 backdrop-blur-md justify-between items-center px-5 py-2">
+    <nav className="flex fixed z-10 top-0 right-0 left-0 border border-gray-300 border-b-1 border-l-0 border-r-0 border-t-0 backdrop-blur-md justify-between items-center px-5 py-2">
       <Link href={"/"}>
         <h1 className="font-bold text-2xl font-serif tracking-wide">
           TextBook

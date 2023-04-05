@@ -45,9 +45,8 @@ const Logged = ({ image, name }: User) => {
     <>
       <Button
         rounded
-        text
-        raised
-        // severity="secondary"
+        outlined
+        severity="secondary"
         icon="pi pi-bars"
         onClick={(e) => menu.current?.toggle(e)}
       />
